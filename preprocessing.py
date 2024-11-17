@@ -1,6 +1,6 @@
 from urllib.parse import urlparse
 
-def preprocessing_domains(domain: str) -> str:
+def preprocessing_domain(domain: str) -> str:
     parsed_url = urlparse(domain)
     domain_name = parsed_url.netloc or parsed_url.path
     
@@ -14,4 +14,4 @@ def preprocessing_domains(domain: str) -> str:
 
 def test():
     domain = "http://asdf.asdf.sdaf.as-dsd.com"
-    print(preprocessing_domains(domain))
+    print(preprocessing_domain(domain))
