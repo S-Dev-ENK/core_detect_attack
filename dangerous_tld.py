@@ -29,5 +29,3 @@ def is_dangerous_tld(domain):
 def test():
     domain = "hey.zip"
     print(is_dangerous_tld(domain))
-
-test()
