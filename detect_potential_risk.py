@@ -4,15 +4,15 @@ import json
 
 
 def detect_potential_risk(domain):
-    short_url_attack = short_url.is_short_url(domain)
-    dangerous_tld_attack = dangerous_tld.is_dangerous_tld(domain)
+    is_short_url = short_url.is_short_url(domain)
+    is_dangerous_tld = dangerous_tld.is_dangerous_tld(domain)
 
-    attack_detected = short_url_attack or dangerous_tld_attack
+    potential_risk_detected = is_short_url or is_dangerous_tld
 
     result = {
-        "has_potential_risk" : attack_detected,
-        "short_url_attack": short_url_attack,
-        "dangerous_tld_attack": dangerous_tld_attack,
+        "has_potential_risk" : potential_risk_detected,
+        "short_url_attack": is_short_url,
+        "dangerous_tld_attack": is_dangerous_tld,
     }
 
     return json.dumps(result, indent=4)
