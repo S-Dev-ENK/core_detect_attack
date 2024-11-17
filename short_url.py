@@ -6,12 +6,19 @@ from urllib.parse import urlparse
 SHORT_URL_DOMAINS = [
     "bit.ly", "t.co", "tinyurl.com", "goo.gl", "is.gd", 
     "buff.ly", "ow.ly", "rebrand.ly", "shorturl.at", 
-    "s.id", "clck.ru"
+    "s.id", "clck.ru", "vo.la",
 ]
+
+
+def normalize_url(url):
+    if not re.match(r'https?://', url):
+        url = 'http://' + url
+    return url
 
 
 def is_short_url(url):
     try:
+        url = normalize_url(url)
         parsed_url = urlparse(url)
         domain = parsed_url.netloc
 
@@ -23,7 +30,7 @@ def is_short_url(url):
             return True
     
     except Exception as e:
-        print("Error at is_short_url {e}")
+        print(f"Error at is_short_url: {e}")
 
     return False
 
@@ -37,20 +44,22 @@ def expand_url(short_url):
         res = requests.head(short_url, allow_redirects=True, headers=headers, timeout=5)
 
         if res.status_code in [301, 302]:
-            print("Redirecting to {res.url}")
+            print(f"Redirecting to {res.url}")
         return res.url
     
     except requests.exceptions.RequestException as e:
-        print("Error at expand_url() {e}")
+        print(f"Error at expand_url: {e}")
 
 
 def test():
-    df = open('./domain.txt', 'r')
-    domain_list = df.read().split("\n")
+    with open('./domain.txt', 'r') as df:
+        domain_list = df.read().splitlines()
 
-    for domain in domain_list :
-        if is_short_url(domain) is True:
-            print(domain, "is shortened (" + expand_url(domain)+')')
+    for domain in domain_list:
+        domain_url = normalize_url(domain)
+        if is_short_url(domain_url):
+            expanded_url = expand_url(domain_url)
+            print(f"{domain} is shortened ({expanded_url})")
         else:
-            print(domain, "is not shortend")
+            print(f"{domain} is not shortened")
         print()
