@@ -52,7 +52,7 @@ def get_used_scripts(url):
     return used_scripts
 
 
-def has_mixed_scripts(url):
+def check_idn_homograph_attack(url):
     used_scripts = get_used_scripts(url)
 
     return len(used_scripts) > 1
@@ -65,5 +65,5 @@ def test():
     for domain in domain_list :
         print("url: ", domain)
         print('used_scripts:', get_used_scripts(domain))
-        print('mixed_scripts:', has_mixed_scripts(domain))
+        print('mixed_scripts:', check_idn_homograph_attack(domain))
         print()
