@@ -24,3 +24,10 @@ dangerous_tlds = [
 def is_dangerous_tld(domain):
     extracted = tldextract.extract(domain)
     return extracted.suffix in dangerous_tlds
+
+
+def test():
+    domain = "hey.zip"
+    print(is_dangerous_tld(domain))
+
+test()
