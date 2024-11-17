@@ -2,6 +2,8 @@ import whois
 import dns.resolver
 import ssl
 import socket
+import json
+from datetime import datetime
 
 def fetch_whois_info(domain: str) -> dict:
     try:
@@ -57,22 +59,36 @@ def fetch_ssl_certificate_info(domain: str) -> dict:
                     "notAfter": cert.get("notAfter"),
                     "subjectAltName": cert.get("subjectAltName")
                 }
+                if isinstance(cert_info.get("notBefore"), datetime):
+                    cert_info["notBefore"] = cert_info["notBefore"].strftime('%Y-%m-%d %H:%M:%S')
+                if isinstance(cert_info.get("notAfter"), datetime):
+                    cert_info["notAfter"] = cert_info["notAfter"].strftime('%Y-%m-%d %H:%M:%S')
     except Exception as e:
         print(f"SSL certificate fetch error: {e}")
     return cert_info
 
 
-def dns_footprinting(domain: str) -> dict:
+def datetime_converter(obj):
+    if isinstance(obj, datetime):
+        return obj.strftime('%Y-%m-%d %H:%M:%S')
+    raise TypeError("Type not serializable")
+
+def dns_footprinting(domain: str) -> str:
     whois_info = fetch_whois_info(domain)
     nslookup_info = fetch_nslookup_info(domain)
     ssl_certificate_info = fetch_ssl_certificate_info(domain)
 
-    return {
+    footprint_data = {
         "whois": whois_info,
         "dns": nslookup_info,
-        "cert" : ssl_certificate_info,
+        "cert": ssl_certificate_info
     }
 
-if __name__ == "__main__":
+    footprint_json = json.dumps(footprint_data, indent=4, default=datetime_converter)
+    return footprint_json
+
+
+def test():
     domain = "google.com"
-    print(type(dns_footprinting(domain)))
+    footprint_json = dns_footprinting(domain)
+    print(footprint_json)
