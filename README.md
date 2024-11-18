@@ -3,6 +3,12 @@
 2. detect social engineering attacks
 3. detect potential but dangerous risks
 
+## dependencies
+```
+pip install python-whois
+pip install dnspython
+```
+
 ## run
 1. create a `domain.txt` file at root directory
 2. run `main.py`
